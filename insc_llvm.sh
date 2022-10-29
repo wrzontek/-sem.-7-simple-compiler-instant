@@ -1,0 +1,1 @@
+#TODO usunąć .sh
