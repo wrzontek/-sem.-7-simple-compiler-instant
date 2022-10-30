@@ -8,42 +8,40 @@
 #include "Absyn.H"
 #include "ParserError.H"
 #include "LLVM_Compiler.cpp"
+#include "JVM_Compiler.cpp"
 
 void usage() {
-    printf("usage: Call with one of the following argument combinations:\n");
-    printf("\t--help\t\tDisplay this help message.\n");
-    printf("\t(no arguments)\tParse stdin verbosely.\n");
-    printf("\t(files)\t\tParse content of files verbosely.\n");
-    printf("\t-s (files)\tSilent mode. Parse content of files silently.\n");
+    printf("usage: ./Compiler <input_file> <jvm/llvm>:\n");
 }
 
 int main(int argc, char **argv) {
     FILE *input;
-    int quiet = 0;
-    char *filename = NULL;
+    char *filename;
+    std::string compiler_type;
 
-    if (argc > 1) {
-        if (strcmp(argv[1], "-s") == 0) {
-            quiet = 1;
-            if (argc > 2) {
-                filename = argv[2];
-            } else {
-                input = stdin;
-            }
-        } else {
-            filename = argv[1];
-        }
+    if (argc != 3) {
+        usage();
+        exit(1);
+    }
+    filename = argv[1];
+    compiler_type = argv[2];
+
+    input = fopen(filename, "r");
+    if (!input) {
+        std::cout << "12312312";
+        usage();
+        exit(1);
+    }
+    if (compiler_type != "jvm" && compiler_type != "llvm") {
+        std::cout << compiler_type;
+        usage();
+        exit(1);
     }
 
-    if (filename) {
-        input = fopen(filename, "r");
-        if (!input) {
-            usage();
-            exit(1);
-        }
-    } else input = stdin;
+    // todo wyciągnąć nazwę (i całą ścieżkę) z filename, użyć do output nazwy/ścieżki
+
     /* The default entry point is used. For other options see Parser.H */
-    Program *parse_tree = NULL;
+    Program *parse_tree = nullptr;
     try {
         parse_tree = pProgram(input);
     } catch (parse_error &e) {
@@ -51,16 +49,21 @@ int main(int argc, char **argv) {
     }
     if (parse_tree) {
         printf("\nParse Successful!\n");
-        if (!quiet) {
-            printf("\n[Abstract Syntax]\n");
-            ShowAbsyn *s = new ShowAbsyn();
-            printf("%s\n\n", s->show(parse_tree));
-            printf("[Linearized Tree]\n");
-            PrintAbsyn *p = new PrintAbsyn();
-            printf("%s\n\n", p->print(parse_tree));
+        printf("\n[Abstract Syntax]\n");
+        ShowAbsyn *s = new ShowAbsyn();
+        printf("%s\n\n", s->show(parse_tree));
+        printf("[Linearized Tree]\n");
+        PrintAbsyn *p = new PrintAbsyn();
+        printf("%s\n\n", p->print(parse_tree));
+        if (compiler_type == "llvm") {
+            auto compiler = new LLVM_Compiler(parse_tree,
+                                              "todofilename.ll"); // TODO filename from input arg, for scripts
+            compiler->compile();
+        } else {
+            auto compiler = new JVM_Compiler(parse_tree,
+                                             "todofilename.j"); // TODO filename from input arg, for scripts
+            compiler->compile();
         }
-        auto compiler = new LLVM_Compiler(parse_tree, "todofilename.ll"); // TODO filename from input arg, for scripts
-        compiler->compile();
 
         delete (parse_tree);
         return 0;

@@ -10,7 +10,6 @@ BISON=bison
 BISON_OPTS=-t -pinstant_
 
 OBJS=src/Absyn.o src/Buffer.o src/Lexer.o src/Parser.o src/Printer.o
-OBJS2=src/Absyn.o src/Buffer.o src/Lexer.o src/Parser.o src/Printer.o src/LLVM_Compiler.o
 
 .PHONY : clean distclean
 
@@ -57,8 +56,11 @@ Skeleton.o : src/Skeleton.C src/Skeleton.H src/Absyn.H
 LLVM_Compiler.o : src/LLVM_Compiler.cpp
 	${CC} ${CCFLAGS} -Wno-unused-parameter -c LLVM_Compiler.C
 
+JVM_Compiler.o : src/JVM_Compiler.cpp
+	${CC} ${CCFLAGS} -Wno-unused-parameter -c JVM_Compiler.C
+
 Test.o : src/Test.C src/Parser.H src/Printer.H src/Absyn.H
 	${CC} ${CCFLAGS} -c src/Test.C
 
-Main.o : src/Main.cpp src/Parser.H src/Printer.H src/Absyn.H src/LLVM_Compiler.cpp
+Main.o : src/Main.cpp src/Parser.H src/Printer.H src/Absyn.H src/LLVM_Compiler.cpp src/JVM_Compiler.cpp
 	${CC} ${CCFLAGS} -c src/Main.cpp

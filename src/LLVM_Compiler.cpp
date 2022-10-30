@@ -8,23 +8,23 @@
 #include "Absyn.H"
 #include "Skeleton.C"
 
-class Var_Init_Visitor : public Skeleton {
+class LLVM_Var_Init_Visitor : public Skeleton {
 public:
     std::set<Ident> variables = std::set<Ident>();
 
-    void visitSAss(SAss *sAss) override { variables.insert(sAss->ident_); };
+    void visitSAss(SAss *s_ass) override { variables.insert(s_ass->ident_); };
 
 };
 
-class Compile_Visitor : public Skeleton {
+class LLVM_Compile_Visitor : public Skeleton {
 public:
     std::ofstream &output_file;
     std::string top_exp_result;
     int tmp_register_number = 0;
     std::set<Ident> variables;
 
-    explicit Compile_Visitor(std::ofstream &output_file, std::set<Ident> &variables) : output_file(output_file),
-                                                                                       variables(variables) {}
+    explicit LLVM_Compile_Visitor(std::ofstream &output_file, std::set<Ident> &variables) : output_file(output_file),
+                                                                                            variables(variables) {}
 
     void call_print(const std::string &value) {
         // value can be registry (%x) or const (42)
@@ -162,7 +162,7 @@ public:
 
     void compile() {
         init_common();
-        auto var_init_visitor = new Var_Init_Visitor;
+        auto var_init_visitor = new LLVM_Var_Init_Visitor;
         program->accept(var_init_visitor);
         variables = var_init_visitor->variables;
 
@@ -170,7 +170,7 @@ public:
             output_file << "\t%" + variable + " = alloca i32\n";
         }
 
-        auto compile_visitor = new Compile_Visitor(output_file, variables);
+        auto compile_visitor = new LLVM_Compile_Visitor(output_file, variables);
         program->accept(compile_visitor);
 
         close_common();

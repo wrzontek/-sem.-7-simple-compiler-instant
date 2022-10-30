@@ -8,122 +8,107 @@
 
 #include "Skeleton.H"
 
+#pragma once
 
 
 void Skeleton::visitProgram(Program *t) {} //abstract class
 void Skeleton::visitStmt(Stmt *t) {} //abstract class
 void Skeleton::visitExp(Exp *t) {} //abstract class
 
-void Skeleton::visitProg(Prog *prog)
-{
-  /* Code For Prog Goes Here */
+void Skeleton::visitProg(Prog *prog) {
+    /* Code For Prog Goes Here */
 
-  if (prog->liststmt_) prog->liststmt_->accept(this);
-
-}
-
-void Skeleton::visitSAss(SAss *s_ass)
-{
-  /* Code For SAss Goes Here */
-
-  visitIdent(s_ass->ident_);
-  if (s_ass->exp_) s_ass->exp_->accept(this);
+    if (prog->liststmt_) prog->liststmt_->accept(this);
 
 }
 
-void Skeleton::visitSExp(SExp *s_exp)
-{
-  /* Code For SExp Goes Here */
+void Skeleton::visitSAss(SAss *s_ass) {
+    /* Code For SAss Goes Here */
 
-  if (s_exp->exp_) s_exp->exp_->accept(this);
-
-}
-
-void Skeleton::visitExpAdd(ExpAdd *exp_add)
-{
-  /* Code For ExpAdd Goes Here */
-
-  if (exp_add->exp_1) exp_add->exp_1->accept(this);
-  if (exp_add->exp_2) exp_add->exp_2->accept(this);
+    visitIdent(s_ass->ident_);
+    if (s_ass->exp_) s_ass->exp_->accept(this);
 
 }
 
-void Skeleton::visitExpSub(ExpSub *exp_sub)
-{
-  /* Code For ExpSub Goes Here */
+void Skeleton::visitSExp(SExp *s_exp) {
+    /* Code For SExp Goes Here */
 
-  if (exp_sub->exp_1) exp_sub->exp_1->accept(this);
-  if (exp_sub->exp_2) exp_sub->exp_2->accept(this);
+    if (s_exp->exp_) s_exp->exp_->accept(this);
 
 }
 
-void Skeleton::visitExpMul(ExpMul *exp_mul)
-{
-  /* Code For ExpMul Goes Here */
+void Skeleton::visitExpAdd(ExpAdd *exp_add) {
+    /* Code For ExpAdd Goes Here */
 
-  if (exp_mul->exp_1) exp_mul->exp_1->accept(this);
-  if (exp_mul->exp_2) exp_mul->exp_2->accept(this);
-
-}
-
-void Skeleton::visitExpDiv(ExpDiv *exp_div)
-{
-  /* Code For ExpDiv Goes Here */
-
-  if (exp_div->exp_1) exp_div->exp_1->accept(this);
-  if (exp_div->exp_2) exp_div->exp_2->accept(this);
+    if (exp_add->exp_1) exp_add->exp_1->accept(this);
+    if (exp_add->exp_2) exp_add->exp_2->accept(this);
 
 }
 
-void Skeleton::visitExpLit(ExpLit *exp_lit)
-{
-  /* Code For ExpLit Goes Here */
+void Skeleton::visitExpSub(ExpSub *exp_sub) {
+    /* Code For ExpSub Goes Here */
 
-  visitInteger(exp_lit->integer_);
+    if (exp_sub->exp_1) exp_sub->exp_1->accept(this);
+    if (exp_sub->exp_2) exp_sub->exp_2->accept(this);
 
 }
 
-void Skeleton::visitExpVar(ExpVar *exp_var)
-{
-  /* Code For ExpVar Goes Here */
+void Skeleton::visitExpMul(ExpMul *exp_mul) {
+    /* Code For ExpMul Goes Here */
 
-  visitIdent(exp_var->ident_);
+    if (exp_mul->exp_1) exp_mul->exp_1->accept(this);
+    if (exp_mul->exp_2) exp_mul->exp_2->accept(this);
+
+}
+
+void Skeleton::visitExpDiv(ExpDiv *exp_div) {
+    /* Code For ExpDiv Goes Here */
+
+    if (exp_div->exp_1) exp_div->exp_1->accept(this);
+    if (exp_div->exp_2) exp_div->exp_2->accept(this);
+
+}
+
+void Skeleton::visitExpLit(ExpLit *exp_lit) {
+    /* Code For ExpLit Goes Here */
+
+    visitInteger(exp_lit->integer_);
+
+}
+
+void Skeleton::visitExpVar(ExpVar *exp_var) {
+    /* Code For ExpVar Goes Here */
+
+    visitIdent(exp_var->ident_);
 
 }
 
 
-void Skeleton::visitListStmt(ListStmt *list_stmt)
-{
-  for (ListStmt::iterator i = list_stmt->begin() ; i != list_stmt->end() ; ++i)
-  {
-    (*i)->accept(this);
-  }
+void Skeleton::visitListStmt(ListStmt *list_stmt) {
+    for (ListStmt::iterator i = list_stmt->begin(); i != list_stmt->end(); ++i) {
+        (*i)->accept(this);
+    }
 }
 
 
-void Skeleton::visitInteger(Integer x)
-{
-  /* Code for Integer Goes Here */
+void Skeleton::visitInteger(Integer x) {
+    /* Code for Integer Goes Here */
 }
 
-void Skeleton::visitChar(Char x)
-{
-  /* Code for Char Goes Here */
+void Skeleton::visitChar(Char x) {
+    /* Code for Char Goes Here */
 }
 
-void Skeleton::visitDouble(Double x)
-{
-  /* Code for Double Goes Here */
+void Skeleton::visitDouble(Double x) {
+    /* Code for Double Goes Here */
 }
 
-void Skeleton::visitString(String x)
-{
-  /* Code for String Goes Here */
+void Skeleton::visitString(String x) {
+    /* Code for String Goes Here */
 }
 
-void Skeleton::visitIdent(Ident x)
-{
-  /* Code for Ident Goes Here */
+void Skeleton::visitIdent(Ident x) {
+    /* Code for Ident Goes Here */
 }
 
 
