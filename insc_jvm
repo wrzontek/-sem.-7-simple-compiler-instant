@@ -1,0 +1,11 @@
+#bin/bash
+
+if [ "$#" -ne 1 ]; then
+    echo "Illegal number of parameters - use 1 parameter"
+fi
+
+dir="$(dirname $1)"
+
+./Compiler $1 jvm &&
+java -jar lib/jasmin.jar -d lib lib/Runtime.j
+java -jar lib/jasmin.jar -d $dir ${1%.*}.j

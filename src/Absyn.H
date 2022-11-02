@@ -117,7 +117,7 @@ class Exp : public Visitable {
 public:
     virtual Exp *clone() const = 0;
 
-    int height = 0;
+    int height = 0; // my only addition in this file
 };
 
 

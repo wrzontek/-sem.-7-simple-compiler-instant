@@ -129,7 +129,6 @@ public:
 class LLVM_Compiler {
 private:
     Program *program;
-    std::string filename;
     std::ofstream output_file;
     std::set<Ident> variables;
 
@@ -152,8 +151,8 @@ private:
     }
 
 public:
-    explicit LLVM_Compiler(Program *program, const std::string &filename) : program(program), filename(filename) {
-        output_file.open(filename);
+    explicit LLVM_Compiler(Program *program, const std::filesystem::path &file_path) : program(program) {
+        output_file.open(file_path);
         if (!output_file.is_open()) {
             std::cerr << "can't open output file" << std::endl;
             exit(1);
@@ -172,7 +171,8 @@ public:
 
         auto compile_visitor = new LLVM_Compile_Visitor(output_file, variables);
         program->accept(compile_visitor);
-
+        delete (var_init_visitor);
+        delete (compile_visitor);
         close_common();
     }
 };

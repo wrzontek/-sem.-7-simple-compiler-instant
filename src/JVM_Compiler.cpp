@@ -6,14 +6,21 @@
 #include <fstream>
 #include <vector>
 #include <map>
+#include <algorithm>
 #include "Absyn.H"
 #include "Skeleton.C"
 
 class JVM_Var_Init_Visitor : public Skeleton {
 public:
+    int elem_count = 1;
     std::map<Ident, int> var_table = std::map<Ident, int>();
 
-    void visitSAss(SAss *s_ass) override { var_table[s_ass->ident_] = (int) var_table.size() + 1; };
+    void visitSAss(SAss *s_ass) override {
+        if (var_table.find(s_ass->ident_) == var_table.end()) {
+            var_table[s_ass->ident_] = elem_count;
+            elem_count++;
+        }
+    };
 
 };
 
@@ -101,7 +108,7 @@ private:
     }
 
     void append_print_invoke() {
-        output_file << "\tinvokestatic todofilename/printInt(I)V\n"; // todo runtime a nie todo
+        output_file << "\tinvokestatic Runtime/printInt(I)V\n";
     }
 
     void append_swap() {
@@ -183,8 +190,7 @@ public:
 class JVM_Compiler {
 private:
     Program *program;
-    std::string filename;
-    std::string filename_no_extension;
+    std::string &filename_no_extension;
     std::ofstream output_file;
     std::map<Ident, int> var_table;
 
@@ -199,14 +205,6 @@ private:
                        "\treturn\n"
                        ".end method\n"
                        "\n"
-                       ".method public static printInt(I)V\n" // todo przenieść do lib/runtime.Class
-                       ".limit stack 2\n"
-                       "\tgetstatic java/lang/System/out Ljava/io/PrintStream;\n"
-                       "\tiload_0\n"
-                       "\tinvokevirtual java/io/PrintStream/println(I)V\n"
-                       "\treturn\n"
-                       ".end method\n"
-                       "\n"
                        ".method public static main([Ljava/lang/String;)V\n";
     }
 
@@ -217,11 +215,9 @@ private:
     }
 
 public:
-    explicit JVM_Compiler(Program *program, const std::string &filename) : program(program), filename(filename) {
-        size_t lastindex = filename.find_last_of('.');
-        filename_no_extension = filename.substr(0, lastindex);
-
-        output_file.open(filename);
+    explicit JVM_Compiler(Program *program, std::string &filename_no_extension, const std::filesystem::path &file_path)
+            : program(program), filename_no_extension(filename_no_extension) {
+        output_file.open(file_path);
         if (!output_file.is_open()) {
             std::cerr << "can't open output file" << std::endl;
             exit(1);
@@ -242,6 +238,9 @@ public:
         auto compile_visitor = new JVM_Compile_Visitor(output_file, var_table);
         program->accept(compile_visitor);
 
+        delete (var_init_visitor);
+        delete (stack_limit_visitor);
+        delete (compile_visitor);
         close_common();
     }
 };

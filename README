@@ -1,0 +1,20 @@
+src/ zawiera pliki generowane przez bnfc (przy czym Absyn.H jest ciutkę modyfikowany) oraz moje pliki: Main.cpp, JVM_Compiler.cpp, LLVM_Compiler.cpp
+lib/ zawiera jasmin.jar pobrany ze students oraz Runtime.j - kod jasminowy definiujący używaną w kompilowanych programach funkcję printInt.
+
+Poza plikami generowanymi przez bnfc korzystam jedynie z biblioteki standardowej.
+
+komplilacja za pomocą polecenia `make` w root projektu
+
+skryptom `insc_llvm` i `insc_jvm` należy nadać uprawnienia do wykonania i odczytu/zapisu:
+    `chmod u+x+w+r insc_llvm`
+    `chmod u+x+w+r insc_jvm`
+
+`./insc_llvm foo/bar/baz.ins` generuje pliki:
+    `foo/bar/baz.ll` - tekstowy kod LLVM
+    `foo/bar/baz.bz` - bitkod LLVM
+
+`./insc_jvm foo/bar/baz.ins` generuje pliki:
+    `foo/bar/baz.j`     - tekstowy kod Jasmin
+    `foo/bar/baz.class` - bitkod JVM
+
+
