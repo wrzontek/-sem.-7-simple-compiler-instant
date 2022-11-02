@@ -118,11 +118,10 @@ private:
 public:
     std::ofstream &output_file;
     std::map<Ident, int> &var_table;
-    int stack_limit;
 
-    explicit JVM_Compile_Visitor(std::ofstream &output_file, std::map<Ident, int> &var_table, int stack_limit)
+    explicit JVM_Compile_Visitor(std::ofstream &output_file, std::map<Ident, int> &var_table)
             : output_file(output_file),
-              var_table(var_table), stack_limit(stack_limit) {}
+              var_table(var_table) {}
 
     void visitExpLit(ExpLit *exp_lit) override {
         output_file << int_to_jvm_bytecode(exp_lit->integer_);
@@ -154,9 +153,7 @@ public:
     }
 
     void visitBinaryExp(bool order_matters, Exp *exp_1, Exp *exp_2) {
-        if (exp_1->height >= exp_2->height
-            || std::max(exp_1->height, exp_2->height) < this->stack_limit) {
-            // either left is harder or harder is below stack limit anyway
+        if (exp_1->height >= exp_2->height) {
             exp_1->accept(this);
             exp_2->accept(this);
         } else {
@@ -238,7 +235,7 @@ public:
         program->accept(stack_limit_visitor);
         output_file << "\t.limit stack " + std::to_string(stack_limit_visitor->max_stack_usage) + "\n";
 
-        auto compile_visitor = new JVM_Compile_Visitor(output_file, var_table, stack_limit_visitor->max_stack_usage);
+        auto compile_visitor = new JVM_Compile_Visitor(output_file, var_table);
         program->accept(compile_visitor);
 
         delete (var_init_visitor);
