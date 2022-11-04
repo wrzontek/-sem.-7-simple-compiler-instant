@@ -104,7 +104,6 @@ public:
 class Program : public Visitable {
 public:
     virtual Program *clone() const = 0;
-
 };
 
 class Stmt : public Visitable {
@@ -303,6 +302,8 @@ public:
     virtual void accept(Visitor *v);
 
     virtual ListStmt *clone() const;
+
+    ~ListStmt();
 };
 
 ListStmt *consListStmt(Stmt *x, ListStmt *xs);
